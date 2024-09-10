@@ -1,6 +1,7 @@
+import courier.BaseURI;
 import courier.Courier;
-import courier.courierClient;
-import courier.courierCredentials;
+import courier.CourierClient;
+import courier.CourierCredentials;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -12,39 +13,42 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 public class TestLogin {
-    int courierId;
+    Integer courierId;
+
+    Courier courier = new Courier("anna2", "1234", "annett");
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
+        RestAssured.baseURI = BaseURI.BASE_URI;
     }
 
     @After
     public void deleteCourier() {
-        courierClient.delete(courierId);
+        if (courierId != null) {
+            CourierClient.delete(courierId);
+        }
     }
 
     @Test
     @DisplayName("Login with all creds")
 
     public void login() {
-        Courier courier = new Courier("anna25", "123", "annett");
-        ValidatableResponse createCourier = courierClient.create(courier);
-        ValidatableResponse loginResponse = courierClient.login(courierCredentials.from(courier));
+        ValidatableResponse createCourier = CourierClient.create(courier);
+        ValidatableResponse loginResponse = CourierClient.login(CourierCredentials.from(courier));
+        int code = loginResponse.extract().statusCode();
+        assertEquals(200, code);
         courierId = loginResponse.extract().path("id");
         assertNotNull(courierId);
-        int code = loginResponse.extract().statusCode();
-        assertEquals(code, 200);
+
     }
 
     @Test
     @DisplayName("Login without login")
 
     public void loginWithoutParam(){
-        Courier courier = new Courier("anna24", "123", "annett");
-        ValidatableResponse createCourier1 = courierClient.create(courier);
+        ValidatableResponse createCourier1 = CourierClient.create(courier);
         String courierPass = courier.getPassword();
-        ValidatableResponse loginResponse = courierClient.login(new courierCredentials(null, courierPass));
+        ValidatableResponse loginResponse = CourierClient.login(new CourierCredentials(null, courierPass));
         int code2 = loginResponse.extract().statusCode();
         assertEquals(400, code2);
         String bodyResponse = loginResponse.extract().path("message");
@@ -55,10 +59,9 @@ public class TestLogin {
     @DisplayName("Login without password")
 
     public void loginWithoutPass(){
-        Courier courier = new Courier("anna24", "123", "annett");
-        ValidatableResponse createCourier1 = courierClient.create(courier);
+        ValidatableResponse createCourier1 = CourierClient.create(courier);
         String courierLogin = courier.getLogin();
-        ValidatableResponse loginResponse = courierClient.login(new courierCredentials(courierLogin, null));
+        ValidatableResponse loginResponse = CourierClient.login(new CourierCredentials(courierLogin, null));
         int code2 = loginResponse.extract().statusCode();
         assertEquals(400, code2);
         String bodyResponse = loginResponse.extract().path("message");
@@ -69,9 +72,8 @@ public class TestLogin {
     @DisplayName("Login without all creds")
 
     public void loginWithoutPassAndLog(){
-        Courier courier = new Courier("anna24", "123", "annett");
-        ValidatableResponse createCourier1 = courierClient.create(courier);
-        ValidatableResponse loginResponse = courierClient.login(new courierCredentials(null, null));
+        ValidatableResponse createCourier1 = CourierClient.create(courier);
+        ValidatableResponse loginResponse = CourierClient.login(new CourierCredentials(null, null));
         int code2 = loginResponse.extract().statusCode();
         assertEquals(400, code2);
         String bodyResponse = loginResponse.extract().path("message");
@@ -82,12 +84,11 @@ public class TestLogin {
     @DisplayName("Login with login not exist")
 
     public void loginWithLoginNotExist(){
-        Courier courier = new Courier("anna25", "123", "annett");
-        ValidatableResponse createCourier = courierClient.create(courier);
-        ValidatableResponse loginResponse = courierClient.login(courierCredentials.from(courier));
+        ValidatableResponse createCourier = CourierClient.create(courier);
+        ValidatableResponse loginResponse = CourierClient.login(CourierCredentials.from(courier));
         courierId = loginResponse.extract().path("id");
-        courierClient.delete(courierId);
-        ValidatableResponse loginResponse1 = courierClient.login(courierCredentials.from(courier));
+        CourierClient.delete(courierId);
+        ValidatableResponse loginResponse1 = CourierClient.login(CourierCredentials.from(courier));
         int code2 = loginResponse1.extract().statusCode();
         assertEquals(404, code2);
         String bodyResponse = loginResponse1.extract().path("message");

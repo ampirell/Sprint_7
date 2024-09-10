@@ -1,20 +1,20 @@
 package courier;
 
-public class courierCredentials {
+public class CourierCredentials {
 
     private String login;
     private String password;
 
-    public courierCredentials() {
+    public CourierCredentials() {
     }
 
-    public courierCredentials(String login, String password) {
+    public CourierCredentials(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
-    public static courierCredentials from(Courier courier) {
-        return new courierCredentials(courier.getLogin(), courier.getPassword());
+    public static CourierCredentials from(Courier courier) {
+        return new CourierCredentials(courier.getLogin(), courier.getPassword());
     }
 
 
@@ -34,3 +34,4 @@ public class courierCredentials {
         this.password = password;
     }
 }
+

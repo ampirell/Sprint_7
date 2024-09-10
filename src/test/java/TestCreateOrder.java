@@ -1,14 +1,15 @@
+import courier.BaseURI;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
-import order.makingOrder;
+import order.MakingOrder;
+import order.Order;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
-
 
 
 @RunWith(Parameterized.class)
@@ -22,7 +23,7 @@ public class TestCreateOrder {
     private final String deliveryDate;
     private final String comment;
     private final String[] color;
-    private order.makingOrder makingOrder = new makingOrder();
+    private MakingOrder makingOrder = new MakingOrder();
 
 
     public TestCreateOrder(String firstName, String lastName, String address, Integer metroStation, String phone, Integer rentTime, String deliveryDate, String comment, String[] color) {
@@ -36,11 +37,11 @@ public class TestCreateOrder {
         this.comment = comment;
         this.color = color;
     }
-
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru";
+        RestAssured.baseURI = BaseURI.BASE_URI;
     }
+
     @Parameterized.Parameters(name = "toThePost")
     public static Object[][] testData() {
         return new Object[][]{
@@ -53,8 +54,9 @@ public class TestCreateOrder {
     @Test
     @DisplayName("Create order")
     public void createOrder() {
-        ValidatableResponse createResponse = makingOrder.creatingOrder(firstName, lastName, address, metroStation,
+        Order order = new Order(firstName, lastName, address, metroStation,
                 phone, rentTime, deliveryDate, comment, color);
+        ValidatableResponse createResponse = makingOrder.creatingOrder(order);
         int code = createResponse.extract().statusCode();
         assertEquals(code, 201);
         int param = createResponse.extract().path("track");
