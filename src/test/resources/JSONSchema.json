@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "default": {},
+  "title": "Root Schema",
+  "required": [
+    "orders",
+    "pageInfo",
+    "availableStations"
+  ],
+  "properties": {
+    "orders": {
+      "type": "array",
+      "default": [],
+      "title": "The orders Schema"
+
+    },
+    "pageInfo": {
+      "type": "object",
+      "default": {},
+      "title": "The pageInfo Schema",
+      "required": [
+        "page",
+        "total",
+        "limit"
+      ],
+      "properties": {
+        "page": {
+          "type": "integer",
+          "default": 0,
+          "title": "The page Schema"
+        },
+        "total": {
+          "type": "integer",
+          "default": 0,
+          "title": "The total Schema"
+        },
+        "limit": {
+          "type": "integer",
+          "default": 0,
+          "title": "The limit Schema"
+        }
+      }
+    },
+    "availableStations": {
+      "type": "array",
+      "default": [],
+      "title": "The availableStations Schema",
+      "items": {
+        "type": "object",
+        "title": "A Schema",
+        "required": [
+          "name",
+          "number",
+          "color"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "The name Schema"
+          },
+          "number": {
+            "type": "string",
+            "title": "The number Schema"
+          },
+          "color": {
+            "type": "string",
+            "title": "The color Schema"
+          }
+        }
+      }
+
+    }
+  }
+
+}
